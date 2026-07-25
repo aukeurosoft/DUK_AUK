@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Квадратне рівняння</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg-1: #f6efe8;
+      --bg-2: #efe2d6;
+      --card: rgba(255, 255, 255, 0.76);
+      --card-border: rgba(72, 50, 34, 0.12);
+      --text: #2f241d;
+      --muted: #6d5b50;
+      --accent: #b24b2a;
+      --accent-2: #244b5a;
+      --success: #1f6f4a;
+      --shadow: 0 24px 60px rgba(73, 45, 28, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(178, 75, 42, 0.18), transparent 34%),
+        radial-gradient(circle at right 20%, rgba(36, 75, 90, 0.14), transparent 30%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: min(920px, 100%);
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+    }
+
+    .hero,
+    .panel {
+      border: 1px solid var(--card-border);
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      border-radius: 28px;
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 32px;
+      position: relative;
+      min-height: 100%;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(178, 75, 42, 0.22), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font: 600 12px/1.4 "Arial Narrow", Arial, sans-serif;
+      color: var(--accent-2);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 20px 0 0;
+      max-width: 32ch;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .formula {
+      margin-top: 28px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(72, 50, 34, 0.08);
+      font-size: 1.2rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    .panel {
+      padding: 28px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .fields {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      font: 600 14px/1.2 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 16px;
+      border: 1px solid rgba(72, 50, 34, 0.16);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text);
+      font: 600 1rem/1.2 Georgia, "Times New Roman", serif;
+      outline: none;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus {
+      border-color: rgba(178, 75, 42, 0.72);
+      box-shadow: 0 0 0 4px rgba(178, 75, 42, 0.14);
+      transform: translateY(-1px);
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 20px;
+      font: 700 15px/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), #8d341e);
+      box-shadow: 0 18px 32px rgba(178, 75, 42, 0.24);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 22px 38px rgba(178, 75, 42, 0.28);
+      filter: saturate(1.03);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .result {
+      min-height: 120px;
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: rgba(36, 75, 90, 0.08);
+      border: 1px solid rgba(36, 75, 90, 0.12);
+      color: var(--text);
+      display: grid;
+      align-content: center;
+      gap: 10px;
+    }
+
+    .result h2 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: "Arial Narrow", Arial, sans-serif;
+      color: var(--accent-2);
+    }
+
+    .result p {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .result .good {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .result .warn {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    @media (max-width: 780px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .panel {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .fields {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">Математичний калькулятор</p>
+      <h1>Квадратне рівняння</h1>
+      <p>Введи коефіцієнти <strong>a</strong>, <strong>b</strong> і <strong>c</strong>, натисни кнопку, і результат з’явиться внизу сторінки.</p>
+      <div class="formula">ax² + bx + c = 0</div>
+    </section>
+
+    <section class="panel" aria-label="Калькулятор квадратного рівняння">
+      <div class="fields">
+        <label>
+          a
+          <input id="a" type="number" step="any" value="1" inputmode="decimal">
+        </label>
+        <label>
+          b
+          <input id="b" type="number" step="any" value="-3" inputmode="decimal">
+        </label>
+        <label>
+          c
+          <input id="c" type="number" step="any" value="2" inputmode="decimal">
+        </label>
+      </div>
+
+      <button id="solveBtn" type="button">Розв’язати</button>
+
+      <div class="result" id="result" aria-live="polite">
+        <h2>Рішення</h2>
+        <p>Тут з’явиться відповідь після натискання кнопки.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const aInput = document.getElementById('a');
+    const bInput = document.getElementById('b');
+    const cInput = document.getElementById('c');
+    const solveBtn = document.getElementById('solveBtn');
+    const result = document.getElementById('result');
+
+    function formatNumber(value) {
+      const rounded = Math.abs(value) < 1e-12 ? 0 : value;
+      return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+    }
+
+    function renderMessage(title, message, tone = '') {
+      result.innerHTML = `
+        <h2>Рішення</h2>
+        <p class="${tone}">${title}</p>
+        <p>${message}</p>
+      `;
+    }
+
+    function solveQuadratic() {
+      const a = Number(aInput.value);
+      const b = Number(bInput.value);
+      const c = Number(cInput.value);
+
+      if ([a, b, c].some((value) => Number.isNaN(value))) {
+        renderMessage('Помилка', 'Будь ласка, заповни всі поля числами.', 'warn');
+        return;
+      }
+
+      if (a === 0) {
+        if (b === 0) {
+          if (c === 0) {
+            renderMessage('Нескінченно багато розв’язків', 'Усі значення x підходять, бо рівняння перетворюється на 0 = 0.', 'good');
+          } else {
+            renderMessage('Розв’язків немає', 'При a = 0 і b = 0 маємо суперечність: c = 0 не виконується.', 'warn');
+          }
+          return;
+        }
+
+        const root = -c / b;
+        renderMessage('Лінійне рівняння', `Оскільки a = 0, рівняння стає лінійним. Корінь: x = ${formatNumber(root)}.`, 'good');
+        return;
+      }
+
+      const discriminant = b * b - 4 * a * c;
+
+      if (discriminant > 0) {
+        const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+        const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+        renderMessage(
+          'Два дійсні корені',
+          `D = ${formatNumber(discriminant)}. x1 = ${formatNumber(x1)}, x2 = ${formatNumber(x2)}.`,
+          'good'
+        );
+        return;
+      }
+
+      if (discriminant === 0) {
+        const x = -b / (2 * a);
+        renderMessage('Один дійсний корінь', `D = 0. Подвійний корінь: x = ${formatNumber(x)}.`, 'good');
+        return;
+      }
+
+      const realPart = -b / (2 * a);
+      const imaginaryPart = Math.sqrt(Math.abs(discriminant)) / (2 * a);
+      renderMessage(
+        'Комплексні корені',
+        `D = ${formatNumber(discriminant)}. x1 = ${formatNumber(realPart)} + ${formatNumber(imaginaryPart)}i, x2 = ${formatNumber(realPart)} - ${formatNumber(imaginaryPart)}i.`,
+        'warn'
+      );
+    }
+
+    solveBtn.addEventListener('click', solveQuadratic);
+  </script>
+</body>
+</html>
